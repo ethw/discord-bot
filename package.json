@@ -1,0 +1,20 @@
+{
+  "name": "ethbot",
+  "description": "Multi-function discord bot",
+  "version": "0.0.1",
+  "author": {
+    "name": "Ethan Wilberforce",
+    "url": "http://ethanw.ca"
+  },
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^11.0.0",
+    "node-opus": "^0.2.4"
+  },
+  "keywords": [
+    "ethbot"
+  ]
+}

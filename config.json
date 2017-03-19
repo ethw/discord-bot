@@ -1,0 +1,10 @@
+{
+  "discord": {
+    "email": "",
+    "password": ""
+    },
+  "commands": {
+    "Example": "example"
+  },
+  "botId": "292795946365091842"
+}
