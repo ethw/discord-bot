@@ -12,10 +12,10 @@ client.on('ready', () => {
 
 client.on('message', message => {
   var commands = bot.loadCommands();
-  var botMentionIsAtStart = message.content.split(" ")[0] === "<@!" + env.botId + ">"
-                            || message.content.split(" ")[0] === "<@" + env.botId + ">"
+  var botWasMentioned = message.mentions.users.get(env.botId) !== undefined;
+  var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
 
-  if (commands.length > 0 && botMentionIsAtStart) {
+  if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
     var trimmedContent = message.content.substr(message.content.indexOf(" ") + 1);
     bot.checkMessageForCommand(trimmedContent, commands, (command) => {
       bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, (reply) => {
