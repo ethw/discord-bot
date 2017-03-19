@@ -1,4 +1,5 @@
 var env = require('../config.json'),
+    gFunctions = require('./google.json'),
     GoogleImages = require('google-images'),
     GoogleSearch = require('google-search');
 var imageClient = new GoogleImages(env.googleInfo.cseid, env.googleInfo.cseapikey);
@@ -11,11 +12,17 @@ class GoogleModule {
     var secondCommandIndex = message.content.indexOf(secondCommandTerm);
     var searchString = message.content.substring(secondCommandIndex + command.length).trim();
 
-    //todo: move second term matching to a config file
-    if (secondCommandTerm === "search") {
-      searchClient.build({q: searchString}, (err, res) => {if (!err) callback(res.items[0].link)});
-    } else if (secondCommandTerm === "image" || secondCommandTerm === "images") {
-      imageClient.search(searchString, {page: 1, safe: 'off'}).then(images => callback(images[0].url));
+    var commandApis = {};
+    commandApis[gFunctions.Image] = () => imageClient.search(searchString, {page: 1, safe: 'off'}).then(images => callback(images[0].url))
+    commandApis[gFunctions.Search] = () => searchClient.build({q: searchString}, (err, res) => {if (!err) callback(res.items[0].link)})
+
+    for (var gFunction in gFunctions) {
+      if (gFunctions.hasOwnProperty(gFunction)) {
+        var gFunctionValue = gFunctions[gFunction];
+        if (gFunctionValue == secondCommandTerm) {
+          commandApis[gFunctionValue]();
+        }
+      }
     }
   }
 }
