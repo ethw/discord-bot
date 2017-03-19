@@ -8,7 +8,7 @@ python 2.7, node 6.x
 ### running the bot
 1. `npm install` to install dependencies.
 2. Edit config.json to add in your bot token, client id, and other required api information.
-3. `node bot.js` to run the bot or just run `runbot.bat` or `runbot.sh`.
+3. `node bot.js`, `runbot.bat`, or `runbot.sh` to run the bot.
 
 
 ### supported commands
