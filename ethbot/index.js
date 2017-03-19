@@ -1,5 +1,4 @@
 var env = require('../config.json'),
-    Example = require('./Example.js'),
     Google = require('./Google.js'),
     Help = require('./Help.js'),
     WolframAlpha = require('./WolframAlpha.js')
@@ -7,7 +6,6 @@ var env = require('../config.json'),
 class EthBot {
   constructor() {
     this.commands = env.commands;
-    this.Example = new Example;
     this.Google = new Google;
     this.Help = new Help;
     this.WolframAlpha = new WolframAlpha;

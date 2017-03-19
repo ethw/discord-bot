@@ -2,7 +2,6 @@
   "token": "tokenGoesHere",
   "botId": "botIdGoesHere",
   "commands": {
-    "Example": "example",
     "Google": "google",
     "Help": "help",
     "WolframAlpha": "wolfram"
