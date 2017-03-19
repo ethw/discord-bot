@@ -3,7 +3,8 @@
 ethbot is a general multipurpose bot for discord.
 
 ### requires
-python 2.7, node 6.x
+- python 2.7
+- node 6.x
 
 ### running the bot
 1. `npm install` to install dependencies.
