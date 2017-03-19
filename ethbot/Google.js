@@ -4,7 +4,7 @@ var env = require('../config.json'),
 var imageClient = new GoogleImages(env.googleInfo.cseid, env.googleInfo.cseapikey);
 var searchClient = new GoogleSearch({key: env.googleInfo.cseapikey, cx: env.googleInfo.cseid});
 
-class Google {
+class GoogleModule {
   Message(command, message, callback) {
     var commandTermArray = message.content.split(" ")
     var secondCommandTerm = commandTermArray[2];
@@ -20,4 +20,4 @@ class Google {
   }
 }
 
-module.exports = Google;
+module.exports = GoogleModule;
