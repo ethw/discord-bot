@@ -12,9 +12,10 @@
   },
   "dependencies": {
     "discord.js": "^11.0.0",
-    "node-opus": "^0.2.4",
     "google-images": "^2.1.0",
-    "google-search": "^0.0.5"
+    "google-search": "^0.0.5",
+    "node-opus": "^0.2.4",
+    "wolfram-alpha": "^0.5.0"
   },
   "keywords": [
     "ethbot"

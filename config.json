@@ -4,10 +4,12 @@
   "commands": {
     "Example": "example",
     "Google": "google",
-    "Help": "help"
+    "Help": "help",
+    "WolframAlpha": "wolfram"
   },
   "googleInfo": {
     "cseid" : "googleCustomSearchEngineIdHere",
     "cseapikey": "googleAPIKeyHere"
-  }
+  },
+  "wolframappid" : "wolframappidHere"
 }
