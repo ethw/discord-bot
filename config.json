@@ -5,11 +5,14 @@
     "Google": "google",
     "Help": "help",
     "WolframAlpha": "wolfram",
-    "WolframAlpha": "wolf"
+    "WolframAlpha": "wolf",
+    "Cleverbot": "cleverbot",
+    "Cleverbot": "cb"
   },
   "googleInfo": {
     "cseid" : "googleCustomSearchEngineIdHere",
     "cseapikey": "googleAPIKeyHere"
   },
-  "wolframappid" : "wolframappidHere"
+  "wolframappid" : "wolframappidHere",
+  "cleverbotapikey" : "cleverbotapikeyHere"
 }
