@@ -1,10 +1,12 @@
 var env = require('../config.json'),
-    Example = require('./Example.js');
+    Example = require('./Example.js'),
+    Google = require('./Google.js');
 
 class EthBot {
   constructor() {
     this.commands = env.commands;
     this.Example = new Example;
+    this.Google = new Google;
   }
 
   loadCommands() {

@@ -11,9 +11,8 @@ client.on('ready', () => {
 
 client.on('message', message => {
   var commands = bot.loadCommands();
-
   var botMentionIsAtStart = message.content.split(" ")[0] === "<@!" + env.botId + ">"
-  console.log(botMentionIsAtStart);
+                            || message.content.split(" ")[0] === "<@" + env.botId + ">"
 
   if (commands.length > 0 && botMentionIsAtStart) {
     var trimmedContent = message.content.substr(message.content.indexOf(" ") + 1);

@@ -4,7 +4,12 @@
     "password": ""
     },
   "commands": {
-    "Example": "example"
+    "Example": "example",
+    "Google": "google"
   },
-  "botId": "292795946365091842"
+  "botId": "292795946365091842",
+  "googleInfo": {
+    "cseid" : "008046162368279756951:hjktpyxz33i",
+    "cseapikey": "AIzaSyCT98VQRQumaIr1-N4Q8lXQYS3qwa-OBwo"
+  }
 }
