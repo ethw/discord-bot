@@ -1,6 +1,6 @@
 {
   "googleSearch": "`@ethbot google search <search term>` searches google for the term.",
   "googleImage": "`@ethbot google image <search term>` searches google images for the term.",
-  "help": "`@ethbot help` lists information about this bots commands. You just used this command.",
-  "wolfram": "`@ethbot [wolf|wolfram] <wolfram query>]` will display wolfram results calculated from the query terms."
+  "wolfram": "`@ethbot [wolf|wolfram] <wolfram query>]` will display wolfram results calculated from the query terms.",
+  "help": "`@ethbot help` lists information about this bots commands. You just used this command."
 }
