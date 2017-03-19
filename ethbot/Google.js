@@ -7,7 +7,7 @@ class Google {
     var commandIndex = message.content.indexOf(command);
     var args = message.content.substring(commandIndex + command.length).trim();
 
-    imageClient.search(args).then(images => callback(images[0].url));
+    imageClient.search(args, {page: 1, safe: 'off'}).then(images => callback(images[0].url));
   }
 }
 
