@@ -1,14 +1,15 @@
 {
-  "token": "tokenGoesHere",
-  "botId": "botIdGoesHere",
+  "token": "MjkyODgyNDI1ODc1Mzk4NjU3.C6-gCA.z0KRBpWOf0LWsLDtfW0xT4g1WDU",
+  "botId": "292882425875398657",
   "commands": {
     "Google": "google",
     "Help": "help",
-    "WolframAlpha": "wolfram"
+    "WolframAlpha": "wolfram",
+    "WolframAlpha": "wolf"
   },
   "googleInfo": {
-    "cseid" : "googleCustomSearchEngineIdHere",
-    "cseapikey": "googleAPIKeyHere"
+    "cseid" : "008046162368279756951:hjktpyxz33i",
+    "cseapikey": "AIzaSyCT98VQRQumaIr1-N4Q8lXQYS3qwa-OBwo"
   },
-  "wolframappid" : "wolframappidHere"
+  "wolframappid" : "EYU5TA-JERQ3KGVJP"
 }
