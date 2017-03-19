@@ -16,8 +16,7 @@ client.on('message', message => {
   var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
 
   if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
-    var trimmedContent = message.content.substr(message.content.indexOf(" ") + 1);
-    bot.checkMessageForCommand(trimmedContent, commands, (command) => {
+    bot.checkMessageForCommand(message, commands, (command) => {
       bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, (reply) => {
         message.reply(reply);
       })
