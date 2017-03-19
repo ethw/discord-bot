@@ -1,11 +1,8 @@
 {
-  "discord": {
-    "email": "",
-    "password": ""
-    },
   "commands": {
     "Example": "example",
-    "Google": "google"
+    "Google": "google",
+    "Help": "help"
   },
   "botId": "292795946365091842",
   "googleInfo": {
