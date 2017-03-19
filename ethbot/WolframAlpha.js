@@ -9,6 +9,8 @@ class WolframAlphaModule {
     var commandTermIndex = message.content.indexOf(commandTerm);
     var wolframString = message.content.substring(commandTermIndex + command.length).trim();
 
+    if (!wolframString.trim()) return callback("Please enter a wolfram query. `@ethanbot help` for more info.");
+
     wolfram.query(wolframString, (err, results) => {
       var responseString = '\n';
       if (!err) {
