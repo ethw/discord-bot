@@ -31,4 +31,5 @@ music(client, {
   global: false,
   anyoneCanSkip: true,
 });
+
 client.login(env.token);
