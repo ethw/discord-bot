@@ -11,7 +11,7 @@ class Google {
     var secondCommandIndex = message.content.indexOf(secondCommandTerm);
     var searchString = message.content.substring(secondCommandIndex + command.length).trim();
 
-
+    //todo: move second term matching to a config file
     if (secondCommandTerm === "search") {
       searchClient.build({q: searchString}, (err, res) => {if (!err) callback(res.items[0].link)});
     } else if (secondCommandTerm === "image" || secondCommandTerm === "images") {
