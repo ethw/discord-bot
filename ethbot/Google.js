@@ -1,11 +1,13 @@
 var env = require('../config.json'),
-    gFunctions = require('./google.json'),
+    info = require('./google.json'),
     GoogleImages = require('google-images'),
-    GoogleSearch = require('google-search');
+    GoogleSearch = require('google-search'),
+    GoogleTranslate = require('google-translate')("AIzaSyBQS3HZCTqTWSoA8I4nn1WSJvHgrG1qA4w");
 var imageClient = new GoogleImages(env.googleInfo.cseid, env.googleInfo.cseapikey);
 var searchClient = new GoogleSearch({key: env.googleInfo.cseapikey, cx: env.googleInfo.cseid});
 
 class GoogleModule {
+
   Message(command, message, callback) {
     var commandTermArray = message.content.split(" ")
     var secondCommandTerm = commandTermArray[2];
@@ -13,8 +15,39 @@ class GoogleModule {
     var searchString = message.content.substring(secondCommandIndex + command.length).trim();
 
     var commandApis = {};
+    var gFunctions = info.googleFunctions;
     commandApis[gFunctions.Image] = () => imageClient.search(searchString, {page: 1, safe: 'off'}).then(images => callback(images[0].url))
     commandApis[gFunctions.Search] = () => searchClient.build({q: searchString}, (err, res) => {if (!err) callback(res.items[0].link)})
+    commandApis[gFunctions.Translate] = () => {
+      var language = searchString.substring(searchString.lastIndexOf(" ") + 1, searchString.length);
+      if (language.length === 2) {
+        var termWithoutLanguage = searchString.substring(0, searchString.lastIndexOf(" "));
+        GoogleTranslate.translate(termWithoutLanguage, language, (err, translation) => {
+          if (!err) {
+            return callback(translation);
+          } else {
+            console.log(err);
+            callback(info.messages.translateError);
+          }
+        });
+      }
+    }
+    commandApis[gFunctions.Languages] = () => {
+      if (this.languageCodes) {
+        return callback(this.buildLanguageCodeReplyString(this.languageCodes));
+      }
+
+      GoogleTranslate.getSupportedLanguages( (err, languageCodes) => {
+        if (!err) {
+          this.languageCodes = languageCodes.map(code => code.toUpperCase());
+           callback(this.buildLanguageCodeReplyString(languageCodes));
+        } else {
+          console.log(err);
+          callback(info.messages.languagesError);
+        }
+      })
+    }
+
 
     for (var gFunction in gFunctions) {
       if (gFunctions.hasOwnProperty(gFunction)) {
@@ -24,6 +57,19 @@ class GoogleModule {
         }
       }
     }
+  }
+
+  buildLanguageCodeReplyString(languageCodes) {
+    var replyString = info.messages.supportedLanguages;
+    var lastLanguage = languageCodes[languageCodes.length - 1];
+    languageCodes.forEach( languageCode => {
+      if (languageCode === lastLanguage) {
+        replyString += languageCode.toUpperCase();
+      } else {
+        replyString += languageCode.toUpperCase() + ", ";
+      }
+    })
+    return replyString;
   }
 }
 
