@@ -7,6 +7,7 @@ var client = new Discord.Client();
 
 client.on('ready', () => {
   console.log('bot online');
+  client.user.setGame('@ethbot help');
 })
 
 client.on('message', message => {
