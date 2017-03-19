@@ -3,18 +3,11 @@
 requires python 2.7, node 6.x
 
 To run the bot...
-1. install dependencies with `npm install`
-2. run `node bot.js` from root
+1. `npm install` to install dependencies
+2. `node bot.js` to run the bot
 
 
 ## commands
-user `@ethanbot help` for a list of supported commands.
-
-
-`@ethbot google search <search term>` searches google for the term.
-
-`@ethbot google image <search term>` searches google images for the term.
-
-`@ethbot [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.
-
-`@ethbot help` lists supported commands.
+- `@ethbot google [search|image] <search term>` searches google search or images for the search term.
+- `@ethbot [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.
+- `@ethbot help` lists supported commands.
