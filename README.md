@@ -9,3 +9,9 @@ To run the bot...
 
 ## commands
 user `@ethanbot help` for a list of supported commands.
+
+
+`@ethbot google search <search term>` searches google for the term.
+`@ethbot google image <search term>` searches google images for the term.
+`@ethbot [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.
+`@ethbot help` lists supported commands.
