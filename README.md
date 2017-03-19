@@ -2,7 +2,7 @@
 
 ethbot is a general multipurpose bot for discord.
 
-###requires
+### requires
 python 2.7, node 6.x
 
 ### running the bot
