@@ -1,15 +1,7 @@
 {
   "google": "`@ethbot google [search|image] <search term>` searches google search or images for the search term.",
   "wolfram": "`@ethbot [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.",
-  "help": "`@ethbot help` lists information about this bots commands. You just used this command.",
-  "cleverbot": "`@ethbot [cleverbot|cb] <phrase>` display the cleverbot reply to phrase.",
-  "musicGeneral": "`@ethbot music <additional command>` uses the music module to play audio from a variety of sources. Additional command options...",
-  "musicPlay": "    `play [url|<search term>]` plays the result of the search or the url, invites bot to channel if bot isn't present.",
-  "musicSkip": "    `skip [number|nothing]` skips `number` number of songs in queue, or 1 if not specified.",
-  "musicQueue": "    `queue` displays the current queue.",
-  "musicPause": "    `pause` pauses playback.",
-  "musicResume": "    `resume` resumes playback.",
-  "musicVolumne": "    `volume [1-200]` adjusts playback volume.",
-  "musicLeave": "    `leave` leaves the channel and clears current queue.",
-  "musicClear": "    `clearqueue` clears the current queue"
+    "cleverbot": "`@ethbot [cleverbot|cb] <phrase>` display the cleverbot reply to phrase.",
+  "help": "`@ethbot help` lists information about this bots commands. You just used this command."
+
 }
