@@ -1,8 +1,9 @@
-var env = require('../config.json'),
-    Google = require('./Google.js'),
-    Help = require('./Help.js'),
-    WolframAlpha = require('./WolframAlpha.js'),
-    Cleverbot = require('./Cleverbot.js');
+const env = require('../config.json')
+const Google = require('./Google.js')
+const Help = require('./Help.js')
+const WolframAlpha = require('./WolframAlpha.js')
+const Cleverbot = require('./Cleverbot.js')
+const Audio = require('./Audio.js')
 
 class EthBot {
   constructor() {
@@ -11,6 +12,7 @@ class EthBot {
     this.Help = new Help;
     this.WolframAlpha = new WolframAlpha;
     this.Cleverbot = new Cleverbot;
+    this.Audio = new Audio;
   }
 
   loadCommands() {
