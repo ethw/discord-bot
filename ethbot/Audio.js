@@ -52,7 +52,8 @@ class AudioModule {
     } else if (secondTerm === 'play') {
       youtube.search(messageWithoutCommands, 1, (err, res) => {
         if (err) return console.log(err)
-        if (res.items && res.items[0].id.kind === 'youtube#playlist') return message.reply('No results for for that search')
+        if (res.items.length === 0) return message.reply('No results for for that search')
+        if (res.items[0].id.kind === 'youtube#playlist') return message.reply('No results for for that search')
         var videoId = res.items[0].id.videoId
         var title = res.items[0].snippet.title
         var channelTitle = res.items[0].snippet.channelTitle
@@ -60,7 +61,13 @@ class AudioModule {
         message.channel.startTyping()
 
         try {
-          var requestUrl = youtubeUrl + videoId
+          //todo: stop searching even for links
+          if (secondTerm.startsWith('http://') || secondTerm.startsWith('https://')) {
+            var requestUrl = secondTerm
+          } else {
+            var requestUrl = youtubeUrl + videoId
+
+          }
           var stream = ytdl(requestUrl, { quality: 'highest', filter: 'audioonly' })
           var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
           voiceChannel.join().then( voice => {
