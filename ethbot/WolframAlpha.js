@@ -3,7 +3,7 @@ var env = require('../config.json'),
 var wolfram = WolframAlpha.createClient(env.wolframappid);
 
 class WolframAlphaModule {
-  Message(command, message, callback) {
+  Message(command, message, client, callback) {
     var commandTermArray = message.content.split(" ")
     var commandTerm = commandTermArray[1];
     var commandTermIndex = message.content.indexOf(commandTerm);

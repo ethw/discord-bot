@@ -11,16 +11,20 @@ client.on('ready', () => {
 })
 
 client.on('message', message => {
-  var commands = bot.loadCommands();
-  var botWasMentioned = message.mentions.users.get(env.botId) !== undefined;
-  var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
+  try {
+    var commands = bot.loadCommands();
+    var botWasMentioned = message.mentions.users.get(env.botId) !== undefined;
+    var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
 
-  if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
-    bot.checkMessageForCommand(message, commands, (command) => {
-      bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, (reply) => {
-        message.reply(reply);
+    if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
+      bot.checkMessageForCommand(message, commands, (command) => {
+        bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, client, (reply) => {
+          message.reply(reply);
+        })
       })
-    })
+    }
+  } catch (err) {
+    console.log(err)
   }
 })
 

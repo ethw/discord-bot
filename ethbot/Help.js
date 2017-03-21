@@ -2,7 +2,7 @@ var env = require('../config.json'),
     descriptions = require('./help.json');
 
 class HelpModule {
-  Message(command, message, callback) {
+  Message(command, message, client, callback) {
     var replyString = "\n";
     for (var prop in descriptions) {
       if (descriptions.hasOwnProperty(prop)) {

@@ -40,8 +40,8 @@ class EthBot {
     }
   }
 
-  runCommand(moduleName, command, message, callback) {
-    this[moduleName].Message(command, message, callback);
+  runCommand(moduleName, command, message, client, callback) {
+    this[moduleName].Message(command, message, client, callback);
   };
 }
 

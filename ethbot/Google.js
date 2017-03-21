@@ -3,12 +3,12 @@ var env = require('../config.json'),
     GoogleImages = require('google-images'),
     GoogleSearch = require('google-search'),
     GoogleTranslate = require('google-translate')("AIzaSyBQS3HZCTqTWSoA8I4nn1WSJvHgrG1qA4w");
-var imageClient = new GoogleImages(env.googleInfo.cseid, env.googleInfo.cseapikey);
-var searchClient = new GoogleSearch({key: env.googleInfo.cseapikey, cx: env.googleInfo.cseid});
+var imageClient = new GoogleImages(env.googleCustomSearchEngineId, env.googleAPIKey);
+var searchClient = new GoogleSearch({key: env.googleAPIKey, cx: env.googleCustomSearchEngineId});
 
 class GoogleModule {
 
-  Message(command, message, callback) {
+  Message(command, message, client, callback) {
     var commandTermArray = message.content.split(" ")
     var secondCommandTerm = commandTermArray[2];
     var secondCommandIndex = message.content.indexOf(secondCommandTerm);
