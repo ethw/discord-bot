@@ -25,10 +25,10 @@ class AudioModule {
     if (secondTerm === 'pause') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
-          message.reply('Playback is already paused')
+          message.channel.sendMessage('Playback is already paused')
         } else {
           voice.pause()
-          message.reply('Playback paused')
+          message.channel.sendMessage('Playback paused')
         }
       })
 
@@ -36,9 +36,9 @@ class AudioModule {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           voice.resume()
-          message.reply('Playback resumed')
+          message.channel.sendMessage('Playback resumed')
         } else {
-          message.reply('Playback is not paused')
+          message.channel.sendMessage('Playback is not paused')
         }
       })
 
@@ -50,20 +50,20 @@ class AudioModule {
 
     } else if (secondTerm === 'volume') {
       this.useVoiceConnection(client, message, voice => {
-        if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return message.reply('Enter a value between 0-400')
+        if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return message.channel.sendMessage('Enter a value between 0-400')
         voice.setVolume(messageWithoutCommands / 100)
-        message.reply('volume set to ' + messageWithoutCommands + "%")
+        message.channel.sendMessage('volume set to ' + messageWithoutCommands + "%")
       })
 
     } else if (secondTerm === 'skip') {
       var queue = this.queues.get(message.guild.id)
       var voiceConnection = client.voiceConnections.get(message.guild.id)
-      if (!voiceConnection || queue.length === 0) return message.reply('Nothing to skip')
+      if (!voiceConnection || queue.length === 0) return message.channel.sendMessage('Nothing to skip')
       voiceConnection.player.dispatcher.end()
 
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
       var queue = this.queues.get(message.guild.id)
-      if (queue.length === 0) return message.reply('Nothing in queue')
+      if (queue.length === 0) return message.channel.sendMessage('Nothing in queue')
       var replyString = '```\ncurrently playing ↴\n'
       var index = 0
       queue.forEach( queueItem => {
@@ -77,8 +77,8 @@ class AudioModule {
       //todo: move link checking out of this search
       youtube.search(messageWithoutCommands, 1, (err, res) => {
         if (err) return console.log(err)
-        if (res.items.length === 0) return message.reply('No results for for that search')
-        if (res.items[0].id.kind === 'youtube#playlist') return message.reply('No results for for that search')
+        if (res.items.length === 0) return message.channel.sendMessage('No results for for that search')
+        if (res.items[0].id.kind === 'youtube#playlist') return message.channel.sendMessage('No results for for that search')
         var videoId = res.items[0].id.videoId
         var videoTitle = res.items[0].snippet.title
         var channelTitle = res.items[0].snippet.channelTitle
@@ -97,7 +97,7 @@ class AudioModule {
 
         var voiceConnection = client.voiceConnections.get(message.guild.id)
         if (voiceConnection) {
-          if (voiceConnection.speaking) return message.reply(videoTitle + ' added to the queue')
+          if (voiceConnection.speaking) return message.channel.sendMessage(videoTitle + ' added to the queue')
         } else {
           var stream = ytdl(requestUrl, { quality: 'highest', filter: 'audioonly' })
           var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
@@ -114,17 +114,17 @@ class AudioModule {
     if (voiceConnection) {
       callback(voiceConnection.player.dispatcher)
     } else {
-      message.reply('ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
+      message.channel.sendMessage('ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
     }
   }
 
   playStream(voice, stream, queue, message) {
     var firstQueueItem = queue[0]
-    message.reply('\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
+    message.channel.sendMessage('\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
     voice.playStream(stream).on('end', reason => {
       queue.shift()
       this.queues.set(message.guild.id, queue)
-      if (queue.length === 0) return message.reply('Queue playback complete')
+      if (queue.length === 0) return message.channel.sendMessage('Queue playback complete')
       var newStream = ytdl(queue[0].link, { quality: 'highest', filter: 'audioonly' })
       this.playStream(voice, newStream, queue, message)
     })
