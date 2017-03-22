@@ -123,8 +123,11 @@ class AudioModule {
     message.channel.sendMessage('\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
     voice.playStream(stream).on('end', reason => {
       queue.shift()
-      this.queues.set(message.guild.id, queue)
-      if (queue.length === 0) return message.channel.sendMessage('Queue playback complete')
+      if (queue.length === 0) {
+        this.queues.set(message.guild.id, [])
+        voice.disconnect()
+        return message.channel.sendMessage('Queue playback complete')
+      }
       var newStream = ytdl(queue[0].link, { quality: 'highest', filter: 'audioonly' })
       this.playStream(voice, newStream, queue, message)
     })
