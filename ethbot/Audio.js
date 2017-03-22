@@ -19,8 +19,10 @@ class AudioModule {
     var secondTerm = tokens[2]
     var messageWithoutCommands = tokens.slice(3).join(" ").trim()
 
+    // init playback queue if necessary
+    if (!this.queues.has(message.guild.id)) this.queues.set(message.guild.id, [])
+
     if (secondTerm === 'pause') {
-      //voice is StreamDispatcher type
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           message.reply('Playback is already paused')
@@ -29,6 +31,7 @@ class AudioModule {
           message.reply('Playback paused')
         }
       })
+
     } else if (secondTerm === 'resume') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
@@ -38,47 +41,69 @@ class AudioModule {
           message.reply('Playback is not paused')
         }
       })
+
     } else if (secondTerm === 'stop') {
       this.useVoiceConnection(client, message, voice => {
         voice.end()
         this.queues.delete(message.guild.id)
       })
+
     } else if (secondTerm === 'volume') {
       this.useVoiceConnection(client, message, voice => {
         if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return message.reply('Enter a value between 0-400')
         voice.setVolume(messageWithoutCommands / 100)
         message.reply('volume set to ' + messageWithoutCommands + "%")
       })
+
+    } else if (secondTerm === 'skip') {
+      var queue = this.queues.get(message.guild.id)
+      var voiceConnection = client.voiceConnections.get(message.guild.id)
+      if (!voiceConnection || queue.length === 0) return message.reply('Nothing to skip')
+      voiceConnection.player.dispatcher.end()
+
+    } else if (secondTerm === 'queue' || secondTerm === 'q'){
+      var queue = this.queues.get(message.guild.id)
+      if (queue.length === 0) return message.reply('Nothing in queue')
+      var replyString = '```\ncurrently playing ↴\n'
+      var index = 0
+      queue.forEach( queueItem => {
+        replyString += ++index + '. ' + queueItem.title + '\n'
+      })
+      message.channel.sendMessage(replyString + '```')
+
     } else if (secondTerm === 'play') {
+      var queue = this.queues.get(message.guild.id)
+
+      //todo: move link checking out of this search
       youtube.search(messageWithoutCommands, 1, (err, res) => {
         if (err) return console.log(err)
         if (res.items.length === 0) return message.reply('No results for for that search')
         if (res.items[0].id.kind === 'youtube#playlist') return message.reply('No results for for that search')
         var videoId = res.items[0].id.videoId
-        var title = res.items[0].snippet.title
+        var videoTitle = res.items[0].snippet.title
         var channelTitle = res.items[0].snippet.channelTitle
 
-        message.channel.startTyping()
+        if (secondTerm.startsWith('http://') || secondTerm.startsWith('https://')) {
+          var requestUrl = secondTerm
+        } else {
+          var requestUrl = youtubeUrl + videoId
+        }
+        queue.push({
+          link: requestUrl,
+          title: videoTitle,
+          channel: channelTitle
+        })
+        this.queues.set(message.guild.id, queue)
 
-        try {
-          //todo: stop searching even for links
-          if (secondTerm.startsWith('http://') || secondTerm.startsWith('https://')) {
-            var requestUrl = secondTerm
-          } else {
-            var requestUrl = youtubeUrl + videoId
-
-          }
+        var voiceConnection = client.voiceConnections.get(message.guild.id)
+        if (voiceConnection) {
+          if (voiceConnection.speaking) return message.reply(videoTitle + ' added to the queue')
+        } else {
           var stream = ytdl(requestUrl, { quality: 'highest', filter: 'audioonly' })
           var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
           voiceChannel.join().then( voice => {
-            message.channel.stopTyping()
-            message.reply('\n`Now playing:` ' + title + '\n`Link:` ' + requestUrl + '\n`Channel:` ' + channelTitle)
-            voice.playStream(stream)
+            this.playStream(voice, stream, queue, message)
           })
-        } catch (err) {
-          console.log('err: ' + err)
-        } finally {
-          message.channel.stopTyping()
         }
       })
     }
@@ -91,6 +116,18 @@ class AudioModule {
     } else {
       message.reply('ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
     }
+  }
+
+  playStream(voice, stream, queue, message) {
+    var firstQueueItem = queue[0]
+    message.reply('\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
+    voice.playStream(stream).on('end', reason => {
+      queue.shift()
+      this.queues.set(message.guild.id, queue)
+      if (queue.length === 0) return message.reply('Queue playback complete')
+      var newStream = ytdl(queue[0].link, { quality: 'highest', filter: 'audioonly' })
+      this.playStream(voice, newStream, queue, message)
+    })
   }
 }
 
