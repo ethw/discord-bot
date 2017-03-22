@@ -2,11 +2,13 @@
   "google": "`@ethbot google [search|image] <search term>` searches google search or images for the search term.",
   "wolfram": "`@ethbot [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.",
   "cleverbot": "`@ethbot [cleverbot|cb] <phrase>` display the cleverbot reply to phrase.",
-  "audioGeneral": "`@ethbot audio <additional commands>` executes an audio command",
+  "audioGeneral": "`@ethbot audio <additional commands>` executes an audio command. Additional commands...",
   "audioPlay": "    `play <search term or link>` searches youtube for the term or link and plays audio from that video",
   "audioStop": "    `stop` bot leaves channel, stops playing audio",
   "audioPause": "    `pause` pauses playback",
   "audioResume": "    `resume` resumes playback",
   "audioVolume": "    `volume <x>` changes the volume to x%",
+  "audioSkip": "    `skip` skips the next item in queue",
+  "audioQueue": "    `[queue|q] lists the current playback queue`",
   "help": "`@ethbot help` lists information about this bots commands. You just used this command."
 }
