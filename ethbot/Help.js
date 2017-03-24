@@ -1,15 +1,16 @@
-var env = require('../config.json'),
-    descriptions = require('./help.json');
+const env = require('../config.json')
+const descriptions = require('./help.json')
 
 class HelpModule {
   Message(command, message, client, callback) {
-    var replyString = "\n";
+    var replyString = "\n"
     for (var prop in descriptions) {
       if (descriptions.hasOwnProperty(prop)) {
         replyString += descriptions[prop] + '\n'
       }
     }
-    callback(replyString);
+    message.author.sendMessage(replyString)
+    message.channel.sendMessage('Check your private messages <@' + message.author.id + '>')
   }
 }
 
