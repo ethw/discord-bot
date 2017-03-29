@@ -11,16 +11,21 @@ class AudioModule {
   constructor() {
     //map of guildId to queue
     this.queues = new Map()
+    //map of guildId to isRepeating boolean
+    this.isRepeatings = new Map()
   }
 
   Message(command, message, client, callback) {
+    var guildId = message.guild.id
+
     //0 - mentions, 1 - audio, 2 - command
     var tokens = message.content.split(" ")
     var secondTerm = tokens[2]
     var messageWithoutCommands = tokens.slice(3).join(" ").trim()
 
     // init playback queue if necessary
-    if (!this.queues.has(message.guild.id)) this.queues.set(message.guild.id, [])
+    if (!this.queues.has(guildId)) this.queues.set(guildId, [])
+    if (!this.isRepeatings.has(guildId)) this.isRepeatings.set(guildId, false)
 
     if (secondTerm === 'pause') {
       this.useVoiceConnection(client, message, voice => {
@@ -43,9 +48,9 @@ class AudioModule {
       })
 
     } else if (secondTerm === 'stop') {
+      this.queues.set(guildId, [])
       this.useVoiceConnection(client, message, voice => {
         voice.end()
-        this.queues.delete(message.guild.id)
       })
 
     } else if (secondTerm === 'volume') {
@@ -56,13 +61,13 @@ class AudioModule {
       })
 
     } else if (secondTerm === 'skip') {
-      var queue = this.queues.get(message.guild.id)
-      var voiceConnection = client.voiceConnections.get(message.guild.id)
+      var queue = this.queues.get(guildId)
+      var voiceConnection = client.voiceConnections.get(guildId)
       if (!voiceConnection || queue.length === 0) return message.channel.sendMessage('Nothing to skip')
       voiceConnection.player.dispatcher.end()
 
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
-      var queue = this.queues.get(message.guild.id)
+      var queue = this.queues.get(guildId)
       if (queue.length === 0) return message.channel.sendMessage('Nothing in queue')
       var replyString = '```\ncurrently playing ↴\n'
       var index = 0
@@ -71,8 +76,11 @@ class AudioModule {
       })
       message.channel.sendMessage(replyString + '```')
 
+    } else if (secondTerm === 'repeat') {
+      var isRepeating = this.isRepeatings.get(guildId)
+      this.setIsRepeating(message, !isRepeating)
     } else if (secondTerm === 'play') {
-      var queue = this.queues.get(message.guild.id)
+      var queue = this.queues.get(guildId)
 
       //todo: move link checking out of this search
       youtube.search(messageWithoutCommands, 1, (err, res) => {
@@ -93,16 +101,16 @@ class AudioModule {
           title: videoTitle,
           channel: channelTitle
         })
-        this.queues.set(message.guild.id, queue)
+        this.queues.set(guildId, queue)
 
-        var voiceConnection = client.voiceConnections.get(message.guild.id)
+        var voiceConnection = client.voiceConnections.get(guildId)
         if (voiceConnection) {
           if (voiceConnection.speaking) return message.channel.sendMessage(videoTitle + ' added to the queue')
         } else {
           var stream = ytdl(requestUrl, { quality: 'highest', filter: 'audioonly' })
           var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
           voiceChannel.join().then( voice => {
-            this.playStream(voice, stream, queue, message)
+            this.playStream(voice, stream, queue, message, "")
           })
         }
       })
@@ -118,19 +126,34 @@ class AudioModule {
     }
   }
 
-  playStream(voice, stream, queue, message) {
+  playStream(voice, stream, queue, message, reason) {
     var firstQueueItem = queue[0]
-    message.channel.sendMessage('\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
+    // Send stream info unless stream is repeating, or stream was skipped
+    if (!this.isRepeatings.get(message.guild.id) || reason !== 'user') {
+      message.channel.sendMessage('\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
+    } else {
+      message.channel.sendMessage('`Now repeating:` '+ firstQueueItem.title)
+    }
     voice.playStream(stream).on('end', reason => {
-      queue.shift()
-      if (queue.length === 0) {
-        this.queues.set(message.guild.id, [])
+      if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.shift())
+      var newQueue = this.queues.get(message.guild.id)
+      if (newQueue.length === 0) {
+        this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
         voice.disconnect()
         return message.channel.sendMessage('Queue playback complete')
       }
-      var newStream = ytdl(queue[0].link, { quality: 'highest', filter: 'audioonly' })
-      this.playStream(voice, newStream, queue, message)
+      var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
+      this.playStream(voice, newStream, newQueue, message, reason)
     })
+  }
+
+  setIsRepeating(message, newIsRepeating, shouldMessage = true) {
+    if (newIsRepeating && shouldMessage) {
+      message.reply('Repeat current audio: `on`')
+    } else if (shouldMessage) {
+      message.reply('Repeat current audio: `off`')
+    }
+    this.isRepeatings.set(message.guild.id, newIsRepeating)
   }
 }
 

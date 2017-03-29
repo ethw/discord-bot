@@ -9,6 +9,7 @@
   "audioResume": "    `resume` resumes playback",
   "audioVolume": "    `volume <x>` changes the volume to x%",
   "audioSkip": "    `skip` skips the next item in queue",
-  "audioQueue": "    `[queue|q] lists the current playback queue`",
+  "audioQueue": "    `[queue|q]` lists the current playback queue",
+  "qudioRepeat": "    `[repeat|r]` toggles the repeat functionality",
   "help": "`@ethbot help` lists information about this bots commands. You just used this command."
 }
