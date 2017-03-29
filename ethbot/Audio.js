@@ -37,7 +37,7 @@ class AudioModule {
         }
       })
 
-    } else if (secondTerm === 'resume' || secondTerm === 'r') {
+    } else if (secondTerm === 'resume' || secondTerm === 'rs') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           voice.resume()

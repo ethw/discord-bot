@@ -6,7 +6,7 @@
   "audioPlay": "    `[play|p] <search term or link>` searches youtube for the term or link and plays audio from that video",
   "audioStop": "    `[stop|s]` bot leaves channel, stops playing audio",
   "audioPause": "    `[pause|ps]` pauses playback",
-  "audioResume": "    `[resume|r]` resumes playback",
+  "audioResume": "    `[resume|rs]` resumes playback",
   "audioVolume": "    `[volume|v] <x>` changes the volume to x%",
   "audioSkip": "    `[skip|sk]` skips the next item in queue",
   "audioQueue": "    `[queue|q]` lists the current playback queue",
