@@ -20,14 +20,14 @@ class AudioModule {
 
     //0 - mentions, 1 - audio, 2 - command
     var tokens = message.content.split(" ")
-    var secondTerm = tokens[2]
+    var secondTerm = tokens[2].toLowerCase()
     var messageWithoutCommands = tokens.slice(3).join(" ").trim()
 
     // init playback queue if necessary
     if (!this.queues.has(guildId)) this.queues.set(guildId, [])
     if (!this.isRepeatings.has(guildId)) this.isRepeatings.set(guildId, false)
 
-    if (secondTerm === 'pause') {
+    if (secondTerm === 'pause' || secondTerm === 'ps') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           message.channel.sendMessage('Playback is already paused')
@@ -37,7 +37,7 @@ class AudioModule {
         }
       })
 
-    } else if (secondTerm === 'resume') {
+    } else if (secondTerm === 'resume' || secondTerm === 'r') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           voice.resume()
@@ -47,20 +47,20 @@ class AudioModule {
         }
       })
 
-    } else if (secondTerm === 'stop') {
+    } else if (secondTerm === 'stop' || secondTerm === 's') {
       this.queues.set(guildId, [])
       this.useVoiceConnection(client, message, voice => {
         voice.end()
       })
 
-    } else if (secondTerm === 'volume') {
+    } else if (secondTerm === 'volume' || secondTerm === 'v') {
       this.useVoiceConnection(client, message, voice => {
         if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return message.channel.sendMessage('Enter a value between 0-400')
         voice.setVolume(messageWithoutCommands / 100)
         message.channel.sendMessage('volume set to ' + messageWithoutCommands + "%")
       })
 
-    } else if (secondTerm === 'skip') {
+    } else if (secondTerm === 'skip' || secondTerm === 'sk') {
       var queue = this.queues.get(guildId)
       var voiceConnection = client.voiceConnections.get(guildId)
       if (!voiceConnection || queue.length === 0) return message.channel.sendMessage('Nothing to skip')
@@ -76,10 +76,10 @@ class AudioModule {
       })
       message.channel.sendMessage(replyString + '```')
 
-    } else if (secondTerm === 'repeat') {
+    } else if (secondTerm === 'repeat' || secondTerm === 'r') {
       var isRepeating = this.isRepeatings.get(guildId)
       this.setIsRepeating(message, !isRepeating)
-    } else if (secondTerm === 'play') {
+    } else if (secondTerm === 'play' || secondTerm === 'p') {
       var queue = this.queues.get(guildId)
 
       //todo: move link checking out of this search
