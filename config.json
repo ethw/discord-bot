@@ -11,10 +11,8 @@
     "Audio": "audio",
     "Audio": "a"
   },
-  "googleInfo": {
-    "cseid" : "googleCustomSearchEngineIdHere",
-    "cseapikey": "googleAPIKeyHere"
-  },
+  "googleCustomSearchEngineId" : "googleCustomSearchEngineIdHere",
+  "googleCustomSearchEngineId": "googleAPIKeyHere",
   "wolframappid" : "wolframappidHere",
   "cleverbotapikey" : "cleverbotapikeyHere"
 }
