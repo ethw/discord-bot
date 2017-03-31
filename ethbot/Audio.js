@@ -101,6 +101,7 @@ class AudioModule {
           title: videoTitle,
           channel: channelTitle
         })
+        console.log(queue)
         this.queues.set(guildId, queue)
 
         var voiceConnection = client.voiceConnections.get(guildId)
@@ -135,8 +136,9 @@ class AudioModule {
       message.channel.sendMessage('`Now repeating:` '+ firstQueueItem.title)
     }
     voice.playStream(stream).on('end', reason => {
-      if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.shift())
+      if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
       var newQueue = this.queues.get(message.guild.id)
+      // console.log(newQueue.link)
       if (newQueue.length === 0) {
         this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
         voice.disconnect()
