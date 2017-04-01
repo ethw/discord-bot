@@ -69,7 +69,7 @@ class AudioModule {
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
       var queue = this.queues.get(guildId)
       if (queue.length === 0) return message.channel.sendMessage('Nothing in queue')
-      var replyString = '```md\ncurrently ↴  repeat: ' + (this.isRepeatings.get(guildId) ? 'on' : 'off') + '\n'
+      var replyString = '```md\ncurrently playing ↴  repeat: ' + (this.isRepeatings.get(guildId) ? 'on' : 'off') + '\n'
       var index = 0
       queue.forEach( queueItem => {
         replyString += ++index + '. ' + queueItem.title + '\n'
