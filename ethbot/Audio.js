@@ -69,7 +69,7 @@ class AudioModule {
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
       var queue = this.queues.get(guildId)
       if (queue.length === 0) return message.channel.sendMessage('Nothing in queue')
-      var replyString = '```\ncurrently playing ↴\n'
+      var replyString = '```md\ncurrently ↴  repeat: ' + (this.isRepeatings.get(guildId) ? 'on' : 'off') + '\n'
       var index = 0
       queue.forEach( queueItem => {
         replyString += ++index + '. ' + queueItem.title + '\n'
@@ -101,7 +101,6 @@ class AudioModule {
           title: videoTitle,
           channel: channelTitle
         })
-        console.log(queue)
         this.queues.set(guildId, queue)
 
         var voiceConnection = client.voiceConnections.get(guildId)
@@ -138,7 +137,6 @@ class AudioModule {
     voice.playStream(stream).on('end', reason => {
       if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
       var newQueue = this.queues.get(message.guild.id)
-      // console.log(newQueue.link)
       if (newQueue.length === 0) {
         this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
         voice.disconnect()
