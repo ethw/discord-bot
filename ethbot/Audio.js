@@ -27,7 +27,7 @@ class AudioModule {
     var secondTerm = tokens[2].toLowerCase()
     var messageWithoutCommands = tokens.slice(3).join(" ").trim()
 
-    // init playback queue if necessary
+    // init playback queue and isRepeating if necessary
     if (!this.queues.has(guildId)) this.queues.set(guildId, [])
     if (!this.isRepeatings.has(guildId)) this.isRepeatings.set(guildId, false)
 
@@ -73,7 +73,6 @@ class AudioModule {
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
       var queue = this.queues.get(guildId)
       if (queue.length === 0) return this.messageUtil.channel(message, 'Nothing in queue')
-      // ?message.channel.sendMessage('Nothing in queue')
       var replyString = '```md\ncurrently playing ↴  repeat: ' + (this.isRepeatings.get(guildId) ? 'on' : 'off') + '\n'
       var index = 0
       queue.forEach( queueItem => {
@@ -111,7 +110,7 @@ class AudioModule {
 
         var voiceConnection = client.voiceConnections.get(guildId)
         if (voiceConnection) {
-          if (voiceConnection.speaking) return message.channel.sendMessage(videoTitle + ' added to the queue')
+          if (voiceConnection.speaking) return this.messageUtil.channel(message, videoTitle + ' added to the queue')
         } else {
           var stream = ytdl(requestUrl, { quality: 'highest', filter: 'audioonly' })
           var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
