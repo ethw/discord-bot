@@ -29,6 +29,7 @@ client.on('message', message => {
   } catch (err) {
     console.log(err)
     fs.writeFile("log", err, err => { if (err) console.log(err + '\n') })
+    throw err
   }
 })
 
