@@ -1,6 +1,7 @@
 var env = require('./config.json'),
     EthBot = require('./ethbot/index.js'),
-    Discord = require('discord.js');
+    Discord = require('discord.js'),
+    fs = require('fs');
 
 var bot = new EthBot();
 var client = new Discord.Client();
@@ -18,6 +19,8 @@ client.on('message', message => {
 
     if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
       bot.checkMessageForCommand(message, commands, (command) => {
+        if (command == 'a' && command != 'audio') message.delete(15000)
+
         bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, client, (reply) => {
           message.reply(reply);
         })
@@ -25,6 +28,7 @@ client.on('message', message => {
     }
   } catch (err) {
     console.log(err)
+    fs.writeFile("log", err, err => { if (err) console.log(err + '\n') })
   }
 })
 

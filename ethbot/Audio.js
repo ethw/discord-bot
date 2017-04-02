@@ -1,6 +1,7 @@
 const env = require('../config.json')
 const Youtube = require('youtube-node')
 const ytdl = require('ytdl-core')
+const MessageUtil = require('./MessageUtil.js')
 
 const youtube = new Youtube()
 youtube.setKey(env.googleAPIKey)
@@ -9,10 +10,13 @@ const youtubeUrl = "https://www.youtube.com/watch?v="
 class AudioModule {
 
   constructor() {
+    this.messageUtil = new MessageUtil()
+
     //map of guildId to queue
     this.queues = new Map()
     //map of guildId to isRepeating boolean
     this.isRepeatings = new Map()
+
   }
 
   Message(command, message, client, callback) {
@@ -30,10 +34,10 @@ class AudioModule {
     if (secondTerm === 'pause' || secondTerm === 'ps') {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
-          message.channel.sendMessage('Playback is already paused')
+          this.messageUtil.channel(message, 'Playback is already paused')
         } else {
           voice.pause()
-          message.channel.sendMessage('Playback paused')
+          this.messageUtil.channel(message, 'Playback paused')
         }
       })
 
@@ -41,9 +45,9 @@ class AudioModule {
       this.useVoiceConnection(client, message, voice => {
         if (voice.paused) {
           voice.resume()
-          message.channel.sendMessage('Playback resumed')
+          this.messageUtil.channel(message, 'Playback resumed')
         } else {
-          message.channel.sendMessage('Playback is not paused')
+          this.messageUtil.channel(message, 'Playback is not paused')
         }
       })
 
@@ -55,26 +59,27 @@ class AudioModule {
 
     } else if (secondTerm === 'volume' || secondTerm === 'v') {
       this.useVoiceConnection(client, message, voice => {
-        if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return message.channel.sendMessage('Enter a value between 0-400')
+        if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return this.messageUtil.channel(message, 'Enter a value between 0-400')
         voice.setVolume(messageWithoutCommands / 100)
-        message.channel.sendMessage('volume set to ' + messageWithoutCommands + "%")
+        this.messageUtil.channel(message, 'volume set to ' + messageWithoutCommands + "%")
       })
 
     } else if (secondTerm === 'skip' || secondTerm === 'sk') {
       var queue = this.queues.get(guildId)
       var voiceConnection = client.voiceConnections.get(guildId)
-      if (!voiceConnection || queue.length === 0) return message.channel.sendMessage('Nothing to skip')
+      if (!voiceConnection || queue.length === 0) return this.messageUtil.channel(message, 'Nothing to skip')
       voiceConnection.player.dispatcher.end()
 
     } else if (secondTerm === 'queue' || secondTerm === 'q'){
       var queue = this.queues.get(guildId)
-      if (queue.length === 0) return message.channel.sendMessage('Nothing in queue')
+      if (queue.length === 0) return this.messageUtil.channel(message, 'Nothing in queue')
+      // ?message.channel.sendMessage('Nothing in queue')
       var replyString = '```md\ncurrently playing ↴  repeat: ' + (this.isRepeatings.get(guildId) ? 'on' : 'off') + '\n'
       var index = 0
       queue.forEach( queueItem => {
         replyString += ++index + '. ' + queueItem.title + '\n'
       })
-      message.channel.sendMessage(replyString + '```')
+      this.messageUtil.channel(message, replyString + '```')
 
     } else if (secondTerm === 'repeat' || secondTerm === 'r') {
       var isRepeating = this.isRepeatings.get(guildId)
@@ -85,8 +90,9 @@ class AudioModule {
       //todo: move link checking out of this search
       youtube.search(messageWithoutCommands, 1, (err, res) => {
         if (err) return console.log(err)
-        if (res.items.length === 0) return message.channel.sendMessage('No results for for that search')
-        if (res.items[0].id.kind === 'youtube#playlist') return message.channel.sendMessage('No results for for that search')
+        if (res.items.length === 0) return this.messageUtil.channel(message, 'No results for for that search')
+        if (res.items[0].id.kind === 'youtube#playlist') return this.messageUtil.channel(message, 'No results for for that search')
+
         var videoId = res.items[0].id.videoId
         var videoTitle = res.items[0].snippet.title
         var channelTitle = res.items[0].snippet.channelTitle
@@ -122,7 +128,7 @@ class AudioModule {
     if (voiceConnection) {
       callback(voiceConnection.player.dispatcher)
     } else {
-      message.channel.sendMessage('ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
+      this.messageUtil.channel(message, 'ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
     }
   }
 
@@ -130,9 +136,9 @@ class AudioModule {
     var firstQueueItem = queue[0]
     // Send stream info unless stream is repeating, or stream was skipped
     if (!this.isRepeatings.get(message.guild.id) || reason !== 'user') {
-      message.channel.sendMessage('\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
+      this.messageUtil.channel(message, '\n\n`Now playing:` ' + firstQueueItem.title + '\n`Link:` ' + firstQueueItem.link + '\n`Channel:` ' + firstQueueItem.channel)
     } else {
-      message.channel.sendMessage('`Now repeating:` '+ firstQueueItem.title)
+      this.messageUtil.channel(message, '`Now repeating:` '+ firstQueueItem.title)
     }
     voice.playStream(stream).on('end', reason => {
       if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
@@ -140,7 +146,7 @@ class AudioModule {
       if (newQueue.length === 0) {
         this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
         voice.disconnect()
-        return message.channel.sendMessage('Queue playback complete')
+        return this.messageUtil.channel(message, 'Queue playback complete')
       }
       var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
       this.playStream(voice, newStream, newQueue, message, reason)
@@ -149,9 +155,9 @@ class AudioModule {
 
   setIsRepeating(message, newIsRepeating, shouldMessage = true) {
     if (newIsRepeating && shouldMessage) {
-      message.reply('Repeat current audio: `on`')
+      this.messageUtil.reply(message, 'Repeat current audio: `on`')
     } else if (shouldMessage) {
-      message.reply('Repeat current audio: `off`')
+      this.messageUtil.reply(message, 'Repeat current audio: `off`')
     }
     this.isRepeatings.set(message.guild.id, newIsRepeating)
   }
