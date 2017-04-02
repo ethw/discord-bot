@@ -26,9 +26,15 @@ class EthBot {
 
   checkMessageForCommand(message, commands, callback) {
     var messageWithoutBotName = message.content.substr(message.content.indexOf(" ") + 1);
+    var counter = 0
     commands.forEach(command => {
-      if (messageWithoutBotName.startsWith(command))
+      if (messageWithoutBotName.startsWith(command)) {
         return callback(command);
+      } else {
+        if (++counter === commands.length) {
+          message.delete(15000)
+        }
+      }
     })
   }
 
