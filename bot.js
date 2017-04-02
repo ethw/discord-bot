@@ -27,8 +27,14 @@ client.on('message', message => {
       })
     }
   } catch (err) {
-    console.log(err)
-    fs.writeFile("log", err, err => { if (err) console.log(err + '\n') })
+    var now = new Date()
+    var calendarString = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
+    var timeInDayString = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
+    var logString = calendarString + ' ' + timeInDayString + ' : '  + err + '\n' + err.stack
+
+    console.log(logString)
+    fs.writeFile("log", logString, err => { if (err) console.log(err + '\n') })
+
     throw err
   }
 })
