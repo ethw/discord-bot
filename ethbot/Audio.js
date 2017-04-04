@@ -61,7 +61,7 @@ class AudioModule {
 
     } else if (secondTerm === 'volume' || secondTerm === 'v') {
       this.useVoiceConnection(client, message, voice => {
-        if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return this.messageUtil.channel(message, 'Enter a value between 0-400')
+        if (messageWithoutCommands < 0 || messageWithoutCommands > 400) return this.messageUtil.channel(message, 'Enter a value between 0-400')
         this.setVolume(messageWithoutCommands / 100, voice, message)
         this.messageUtil.channel(message, 'volume set to ' + messageWithoutCommands + "%")
       })
