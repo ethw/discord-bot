@@ -16,7 +16,8 @@ class AudioModule {
     this.queues = new Map()
     //map of guildId to isRepeating boolean
     this.isRepeatings = new Map()
-
+    //map of guildId to current volume
+    this.volumes = new Map()
   }
 
   Message(command, message, client, callback) {
@@ -27,9 +28,10 @@ class AudioModule {
     var secondTerm = tokens[2].toLowerCase()
     var messageWithoutCommands = tokens.slice(3).join(" ").trim()
 
-    // init playback queue and isRepeating if necessary
+    // init playback queue, isRepeating, and volume if necessary
     if (!this.queues.has(guildId)) this.queues.set(guildId, [])
     if (!this.isRepeatings.has(guildId)) this.isRepeatings.set(guildId, false)
+    if (!this.volumes.has(guildId)) this.volumes.set(guildId, 1)
 
     if (secondTerm === 'pause' || secondTerm === 'ps') {
       this.useVoiceConnection(client, message, voice => {
@@ -60,7 +62,7 @@ class AudioModule {
     } else if (secondTerm === 'volume' || secondTerm === 'v') {
       this.useVoiceConnection(client, message, voice => {
         if (messageWithoutCommands < 0 && messageWithoutCommands < 400) return this.messageUtil.channel(message, 'Enter a value between 0-400')
-        voice.setVolume(messageWithoutCommands / 100)
+        this.setVolume(messageWithoutCommands / 100, voice, message)
         this.messageUtil.channel(message, 'volume set to ' + messageWithoutCommands + "%")
       })
 
@@ -139,12 +141,15 @@ class AudioModule {
     } else {
       this.messageUtil.channel(message, '`Now repeating:` '+ firstQueueItem.title)
     }
-    voice.playStream(stream).on('end', reason => {
+    var streamDispatcher = voice.playStream(stream)
+    streamDispatcher.setVolume(this.getVolume(message))
+    streamDispatcher.on('end', reason => {
       if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
       var newQueue = this.queues.get(message.guild.id)
       if (newQueue.length === 0) {
         this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
         voice.disconnect()
+        this.resetVolume(message)
         return this.messageUtil.channel(message, 'Queue playback complete')
       }
       var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
@@ -159,6 +164,19 @@ class AudioModule {
       this.messageUtil.reply(message, 'Repeat current audio: `off`')
     }
     this.isRepeatings.set(message.guild.id, newIsRepeating)
+  }
+
+  setVolume(volume, voice, message) {
+    voice.setVolume(volume)
+    this.volumes.set(message.guild.id, volume)
+  }
+
+  getVolume(message) {
+    return this.volumes.get(message.guild.id)
+  }
+
+  resetVolume(message) {
+    this.volumes.set(message.guild.id, 1)
   }
 }
 
