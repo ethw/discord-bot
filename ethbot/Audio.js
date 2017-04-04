@@ -136,7 +136,7 @@ class AudioModule {
     }
   }
 
-  playStream(voice, stream, queue, message, reason) {
+  playStream(voice, stream, queue, message, reason, seekTime = 0) {
     var firstQueueItem = queue[0]
     // Send stream info unless stream is repeating, or stream was skipped
     if (!this.isRepeatings.get(message.guild.id) || reason !== 'user') {
@@ -144,10 +144,14 @@ class AudioModule {
     } else {
       this.messageUtil.channel(message, '`Now repeating:` '+ firstQueueItem.title)
     }
-    var streamDispatcher = voice.playStream(stream)
-    streamDispatcher.setVolume(this.getVolume(message))
+    var streamDispatcher = voice.playStream(stream, {volume: this.getVolume(message), seek: seekTime})
     streamDispatcher.on('end', reason => {
       this.logEndReason(reason, queue[0])
+      if (reason === 'Stream is not generating quickly enough.') {
+        var failedTime = streamDispatcher.time
+        return this.playStream(voice, stream, queue, message, '', failedTime)
+      }
+
       if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
       var newQueue = this.queues.get(message.guild.id)
       if (newQueue.length === 0) {
