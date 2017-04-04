@@ -131,7 +131,7 @@ class AudioModule {
     if (voiceConnection) {
       callback(voiceConnection.player.dispatcher)
     } else {
-      this.messageUtil.channel(message, 'ethbot is not in a voice channel. Use @ethbot help to learn how to fix that')
+      this.messageUtil.channel(message, 'n is not in a voice channel. Use @n help to learn how to fix that')
     }
   }
 
