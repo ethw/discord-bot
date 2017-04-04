@@ -2,6 +2,7 @@ const env = require('../config.json')
 const Youtube = require('youtube-node')
 const ytdl = require('ytdl-core')
 const MessageUtil = require('./MessageUtil.js')
+const fs = require('fs')
 
 const youtube = new Youtube()
 youtube.setKey(env.googleAPIKey)
@@ -146,6 +147,7 @@ class AudioModule {
     var streamDispatcher = voice.playStream(stream)
     streamDispatcher.setVolume(this.getVolume(message))
     streamDispatcher.on('end', reason => {
+      this.logEndReason(reason, queue[0])
       if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
       var newQueue = this.queues.get(message.guild.id)
       if (newQueue.length === 0) {
@@ -157,6 +159,16 @@ class AudioModule {
       var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
       this.playStream(voice, newStream, newQueue, message, reason)
     })
+  }
+
+  logEndReason(reason, playbackItem) {
+    var now = new Date()
+    var calendarString = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
+    var timeInDayString = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
+    var dateAndReason = calendarString + ' ' + timeInDayString + ' : '  + 'reason: ' + reason
+    var videoInfo = '\n    video: ' + playbackItem.title + '\n    link: ' + playbackItem.link + '\n'
+
+    fs.appendFileSync('log', dateAndReason + videoInfo)
   }
 
   setIsRepeating(message, newIsRepeating, shouldMessage = true) {
