@@ -18,13 +18,12 @@ n is a general multipurpose bot for discord.
 - `@n [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.
 - `@n [cleverbot|cb] <phrase>` display the cleverbot reply to phrase.
 - `@n [audio|a] <additional commands>` executes an audio command. Additional commands...
--     `[play|p] <search term or link>` searches youtube for the term or link and plays audio from that video
--     `[stop|s]` bot leaves channel, stops playing audio
--     `[pause|ps]` pauses playback
--     `[resume|rs]` resumes playback
--     `[volume|v] <x>` changes the volume to x%
--     `[skip|sk]` skips the next item in queue
--     `[queue|q]` lists the current playback queue
--     `[repeat|r]` toggles the repeat functionality
-
+..* `[play|p] <search term or link>` searches youtube for the term or link and plays audio from that video
+..* `[stop|s]` bot leaves channel, stops playing audio
+..* `[pause|ps]` pauses playback
+..* `[resume|rs]` resumes playback
+..* `[volume|v] <x>` changes the volume to x%
+..* `[skip|sk]` skips the next item in queue
+..* `[queue|q]` lists the current playback queue
+..* `[repeat|r]` toggles the repeat functionality
 - `@n help` lists supported commands.
