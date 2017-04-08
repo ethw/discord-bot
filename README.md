@@ -1,4 +1,5 @@
-# !(http://i.imgur.com/8BbeHz1.png) - the peoples discord bot
+!(http://i.imgur.com/8BbeHz1.png) 
+# - the peoples discord bot
 
 n is a general multipurpose bot for discord.
 
