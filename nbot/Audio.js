@@ -1,8 +1,8 @@
 const env = require('../config.json')
 const Youtube = require('youtube-node')
 const ytdl = require('ytdl-core')
-const MessageUtil = require('./MessageUtil.js')
-const fs = require('fs')
+const MessageUtil = require('./utils/MessageUtil.js')
+const LogUtil = require('./utils/LogUtil.js')
 
 const youtube = new Youtube()
 youtube.setKey(env.googleAPIKey)
@@ -12,6 +12,7 @@ class AudioModule {
 
   constructor() {
     this.messageUtil = new MessageUtil()
+    this.logUtil = new LogUtil()
 
     //map of guildId to queue
     this.queues = new Map()
@@ -171,13 +172,10 @@ class AudioModule {
   }
 
   logEndReason(reason, playbackItem) {
-    var now = new Date()
-    var calendarString = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
-    var timeInDayString = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
-    var dateAndReason = calendarString + ' ' + timeInDayString + ' : '  + 'reason: ' + reason
+    var reasonString = 'reason: ' + reason
     var videoInfo = '\n    video: ' + playbackItem.title + '\n    link: ' + playbackItem.link + '\n'
 
-    fs.appendFileSync('log', dateAndReason + videoInfo)
+    this.logUtil.logWithTime(reasonString + videoInfo)
   }
 
   setIsRepeating(message, newIsRepeating, shouldMessage = true) {

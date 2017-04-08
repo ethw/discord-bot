@@ -1,7 +1,7 @@
 const env = require('./config.json')
 const NBot = require('./nbot/index.js')
 const Discord = require('discord.js')
-const fs = require('fs')
+const LogUtil = require('./nbot/utils/LogUtil.js')
 
 var bot = new NBot()
 var client = new Discord.Client()
@@ -27,13 +27,8 @@ client.on('message', message => {
       })
     }
   } catch (err) {
-    var now = new Date()
-    var calendarString = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
-    var timeInDayString = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
-    var logString = calendarString + ' ' + timeInDayString + ' : '  + err + '\n' + err.stack + '\n'
-
-    console.log(logString)
-    fs.appendFileSync('log', logString)
+    var logUtil = new LogUtil()
+    logUtil.logWithTime(err + '\n' + err.stack + '\n')
     throw err
   }
 })
