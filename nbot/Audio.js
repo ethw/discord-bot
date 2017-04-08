@@ -174,7 +174,6 @@ class AudioModule {
   logEndReason(reason, playbackItem) {
     var reasonString = 'reason: ' + reason
     var videoInfo = '\n    video: ' + playbackItem.title + '\n    link: ' + playbackItem.link + '\n'
-
     this.logUtil.logWithTime(reasonString + videoInfo)
   }
 

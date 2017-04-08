@@ -14,13 +14,12 @@ client.on('ready', () => {
 client.on('message', message => {
   try {
     var commands = bot.loadCommands()
-    var botWasMentioned = message.mentions.users.get(env.botId) !== undefined
+    var botWasMentioned = message.isMentioned(client.user)
     var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
 
     if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
       bot.checkMessageForCommand(message, commands, (command) => {
         if (command == 'a' && command != 'audio') message.delete(15000)
-
         bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, client, (reply) => {
           message.reply(reply)
         })
