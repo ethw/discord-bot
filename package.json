@@ -1,5 +1,5 @@
 {
-  "name": "ethbot",
+  "name": "nbot",
   "description": "Multi-function discord bot",
   "version": "0.0.1",
   "author": {
@@ -23,6 +23,6 @@
     "ytdl-core": "^0.10.0"
   },
   "keywords": [
-    "ethbot"
+    "nbot"
   ]
 }

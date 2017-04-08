@@ -1,0 +1,15 @@
+{
+  "google": "`@n google [search|image] <search term>` searches google search or images for the search term.",
+  "wolfram": "`@n [wolf|wolfram] <wolfram query>]` displays wolfram results calculated from the query terms.",
+  "cleverbot": "`@n [cleverbot|cb] <phrase>` display the cleverbot reply to phrase.",
+  "audioGeneral": "`@n [audio|a] <additional commands>` executes an audio command. Additional commands...",
+  "audioPlay": "    `[play|p] <search term or link>` searches youtube for the term or link and plays audio from that video",
+  "audioStop": "    `[stop|s]` bot leaves channel, stops playing audio",
+  "audioPause": "    `[pause|ps]` pauses playback",
+  "audioResume": "    `[resume|rs]` resumes playback",
+  "audioVolume": "    `[volume|v] <x>` changes the volume to x%",
+  "audioSkip": "    `[skip|sk]` skips the next item in queue",
+  "audioQueue": "    `[queue|q]` lists the current playback queue",
+  "qudioRepeat": "    `[repeat|r]` toggles the repeat functionality",
+  "help": "`@n help` lists information about this bots commands. You just used this command."
+}

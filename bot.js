@@ -1,20 +1,20 @@
-var env = require('./config.json'),
-    EthBot = require('./ethbot/index.js'),
-    Discord = require('discord.js'),
-    fs = require('fs');
+const env = require('./config.json')
+const NBot = require('./nbot/index.js')
+const Discord = require('discord.js')
+const fs = require('fs')
 
-var bot = new EthBot();
-var client = new Discord.Client();
+var bot = new NBot()
+var client = new Discord.Client()
 
 client.on('ready', () => {
-  console.log('n online');
-  client.user.setGame('@n help');
+  console.log('n online')
+  client.user.setGame('@n help')
 })
 
 client.on('message', message => {
   try {
-    var commands = bot.loadCommands();
-    var botWasMentioned = message.mentions.users.get(env.botId) !== undefined;
+    var commands = bot.loadCommands()
+    var botWasMentioned = message.mentions.users.get(env.botId) !== undefined
     var botMentionIsAtStart = message.content.split(" ")[0].includes(env.botId)
 
     if (commands.length > 0 && botWasMentioned && botMentionIsAtStart) {
@@ -22,7 +22,7 @@ client.on('message', message => {
         if (command == 'a' && command != 'audio') message.delete(15000)
 
         bot.runCommand(bot.getKeyByValue(bot.commands, command), command, message, client, (reply) => {
-          message.reply(reply);
+          message.reply(reply)
         })
       })
     }
@@ -38,4 +38,4 @@ client.on('message', message => {
   }
 })
 
-client.login(env.token);
+client.login(env.token)
