@@ -10,6 +10,6 @@
   "audioVolume": "    `[volume|v] <x>` changes the volume to x%",
   "audioSkip": "    `[skip|sk]` skips the next item in queue",
   "audioQueue": "    `[queue|q]` lists the current playback queue",
-  "qudioRepeat": "    `[repeat|r]` toggles the repeat functionality",
+  "audioRepeat": "    `[repeat|r]` toggles the repeat functionality",
   "help": "`@n help` lists information about this bots commands. You just used this command."
 }

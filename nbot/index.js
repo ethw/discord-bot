@@ -6,26 +6,25 @@ const Cleverbot = require('./Cleverbot.js')
 const Audio = require('./Audio.js')
 
 class NBot {
-  constructor() {
+  constructor () {
     this.commands = env.commands
-    this.Google = new Google
-    this.Help = new Help
-    this.WolframAlpha = new WolframAlpha
-    this.Cleverbot = new Cleverbot
-    this.Audio = new Audio
+    this.Google = new Google()
+    this.Help = new Help()
+    this.WolframAlpha = new WolframAlpha()
+    this.Cleverbot = new Cleverbot()
+    this.Audio = new Audio()
   }
 
-  loadCommands() {
+  loadCommands () {
     var result = []
     for (var key in this.commands) {
-      if (this.commands.hasOwnProperty(key))
-        result.push(this.commands[key])
+      if (this.commands.hasOwnProperty(key)) { result.push(this.commands[key]) }
     }
     return result
   }
 
-  checkMessageForCommand(message, commands, callback) {
-    var messageWithoutBotName = message.content.substr(message.content.indexOf(" ") + 1)
+  checkMessageForCommand (message, commands, callback) {
+    var messageWithoutBotName = message.content.substr(message.content.indexOf(' ') + 1)
     var counter = 0
     commands.forEach(command => {
       if (messageWithoutBotName.startsWith(command)) {
@@ -38,15 +37,15 @@ class NBot {
     })
   }
 
-  getKeyByValue(object, value) {
+  getKeyByValue (object, value) {
     for (var property in object) {
       if (object.hasOwnProperty(property)) {
-        if (object[property] == value) return property
+        if (object[property] === value) return property
       }
     }
   }
 
-  runCommand(moduleName, command, message, client, callback) {
+  runCommand (moduleName, command, message, client, callback) {
     this[moduleName].Message(command, message, client, callback)
   }
 }
