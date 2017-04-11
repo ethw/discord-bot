@@ -73,26 +73,16 @@ class AudioModule {
     var streamDispatcher = voice.playStream(stream, {volume: this.getVolume(message), seek: seekTime})
     streamDispatcher.on('end', reason => {
       this.logEndReason(reason, queue[0])
-      if (reason === 'Stream is not generating quickly enough.') {
-        var failedTime = streamDispatcher.time
-        var voiceConnection = client.voiceConnections.get(message.guild.id)
-        if (voiceConnection) voiceConnection.disconnect()
-        var voiceChannel = message.guild.channels.find(channel => channel.type === 'voice' && channel.members.has(message.author.id))
-        voiceChannel.join().then(voice => {
-          this.playStream(client, voice, stream, queue, message, '', failedTime)
-        })
-      } else {
-        if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
-        var newQueue = this.queues.get(message.guild.id)
-        if (newQueue.length === 0) {
-          this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
-          voice.disconnect()
-          this.resetVolume(message)
-          return this.messageUtil.channel(message, 'Queue playback complete')
-        }
-        var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
-        this.playStream(client, voice, newStream, newQueue, message, reason)
+      if (!this.isRepeatings.get(message.guild.id) && queue.length > 0) this.queues.set(message.guild.id, queue.length === 1 ? [] : queue.slice(1))
+      var newQueue = this.queues.get(message.guild.id)
+      if (newQueue.length === 0) {
+        this.setIsRepeating(message, false, this.isRepeatings.get(message.guild.id))
+        voice.disconnect()
+        this.resetVolume(message)
+        return this.messageUtil.channel(message, 'Queue playback complete')
       }
+      var newStream = ytdl(newQueue[0].link, { quality: 'highest', filter: 'audioonly' })
+      this.playStream(client, voice, newStream, newQueue, message, reason)
     })
   }
 
