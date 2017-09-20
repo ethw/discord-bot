@@ -12,7 +12,7 @@
     "Audio": "a"
   },
   "googleCustomSearchEngineId" : "googleCustomSearchEngineIdHere",
-  "googleCustomSearchEngineId": "googleAPIKeyHere",
+  "googleAPIKey": "googleAPIKeyHere",
   "wolframappid" : "wolframappidHere",
   "cleverbotapikey" : "cleverbotapikeyHere"
 }
